@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login • AI Chat</title>
+
+<link rel="stylesheet" href="style.css?v=20">
+
+<style>
+  .login-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  #googleBtn {
+    background: #4285F4;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  #googleBtn:active {
+    opacity: 0.8;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="center-box">
+
+  <div class="login-title">Login</div>
+
+  <button id="googleBtn">Login with Google</button>
+
+</div>
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+
+<!-- Google Login Logic -->
+<script src="google.js"></script>
+
+</body>
+</html>
