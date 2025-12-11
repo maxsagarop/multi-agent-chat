@@ -3,36 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Multi Agent Chat</title>
+  <title>AI Chat App</title>
 
-  <!-- New filename → style.css (cache bypass) -->
-  <link rel="stylesheet" href="style.css?v=1" />
+  <script>
+    // যদি login থাকে → home এ
+    if (localStorage.getItem("logged_in") === "yes") {
+      window.location.href = "home.html";
+    } 
+    // login না থাকলে → login.html
+    else {
+      window.location.href = "login.html";
+    }
+  </script>
 </head>
 
 <body>
-
-  <div class="container">
-
-    <!-- Sidebar / Agents -->
-    <aside class="sidebar">
-      <h3>AI Agents</h3>
-      <ul id="agent-list"></ul>
-    </aside>
-
-    <!-- Chat Area -->
-    <main class="chat-area">
-      <div id="chat-box" class="chat-box"></div>
-
-      <div class="input-area">
-        <input id="msg" type="text" placeholder="Write a message..." />
-        <button id="send-btn">Send</button>
-      </div>
-    </main>
-
-  </div>
-
-  <!-- Frontend Logic -->
-  <script src="app.js"></script>
-
+  <!-- শুধু redirect হবে -->
 </body>
 </html>
