@@ -1,45 +1,58 @@
-let activeAgent = localStorage.getItem("agent") || "riya";
+// Load selected agent
+let agentId = localStorage.getItem("agentId") || "riya";
 
 const chatBox = document.getElementById("chat-box");
 const typing = document.getElementById("typingIndicator");
+const sendBtn = document.getElementById("send-btn");
+const msgInput = document.getElementById("msg");
 
-// Show message bubble with animation
-function addMessage(text, type){
-  const div = document.createElement("div");
-  div.classList.add("message", type);
-  div.textContent = text;
-
-  chatBox.appendChild(div);
-
-  // Auto scroll down
-  chatBox.scrollTop = chatBox.scrollHeight;
+// Add message to chat
+function addMessage(text, type) {
+    const msg = document.createElement("div");
+    msg.className = "message " + type;
+    msg.textContent = text;
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Fake bot reply (later replace with your AI API)
-async function fakeBotReply(msg){
-  return new Promise(res=>{
-    setTimeout(()=>{
-      res("You said: " + msg);
-    }, 900);
-  });
+// Send message to backend server (REAL AI REPLY)
+async function sendToAI(message) {
+    try {
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                agentId: agentId,
+                message: message
+            })
+        });
+
+        const data = await res.json();
+        return data.reply;
+
+    } catch (err) {
+        return "Server error, try again.";
+    }
 }
 
-document.getElementById("send-btn").onclick = async () => {
-  const msg = document.getElementById("msg");
-  const text = msg.value.trim();
-  if(!text) return;
+// On Send Button Click
+sendBtn.onclick = async () => {
+    const text = msgInput.value.trim();
+    if (!text) return;
 
-  addMessage(text, "user");
-  msg.value = "";
+    addMessage(text, "user");
+    msgInput.value = "";
 
-  // show typing animation
-  typing.style.display = "flex";
-  await new Promise(r => setTimeout(r, 1200));
+    typing.style.display = "flex"; // show typing animation
 
-  const reply = await fakeBotReply(text);
+    const reply = await sendToAI(text);
 
-  typing.style.display = "none";
+    typing.style.display = "none";
 
-  // bot final reply
-  addMessage(reply, "bot");
+    addMessage(reply, "bot");
 };
+
+// Enter key support
+msgInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendBtn.click();
+});
