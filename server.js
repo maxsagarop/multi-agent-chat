@@ -1,37 +1,38 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import OpenAI from "openai";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// ---------------------------
+// Render Safe server.js
+// ---------------------------
+const express = require("express");
+const path = require("path");
+const OpenAI = require("openai");
 
 const app = express();
 app.use(express.json());
 
-// Serve frontend files
+// serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
+// OpenAI init
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Agents personality
+// Agent personalities
 const personalities = {
-  riya: "Sweet, friendly Bengali girl.",
-  meherin: "Calm & caring girl.",
-  disha: "Funny talkative girl.",
+  riya: "Sweet Bengali girl. Friendly, caring.",
+  meherin: "Calm, polite, intelligent girl.",
+  disha: "Funny, talkative, playful girl.",
   ayesha: "Mature supportive girl.",
   ananya: "Cute soft-spoken girl."
 };
 
-// Auto-language system prompt
+// Language auto-detection
 const systemPrompt = `
 Detect the user's language.
 Always reply in the SAME language.
-Be friendly, soft, and natural.
+Speak friendly and naturally like a girl.
 `;
 
+// Chat API
 app.post("/api/chat", async (req, res) => {
   try {
     const { agentId, message } = req.body;
@@ -47,12 +48,12 @@ app.post("/api/chat", async (req, res) => {
 
     res.json({ reply: completion.choices[0].message.content });
 
-  } catch (error) {
-    console.log("Error:", error);
-    res.json({ reply: "Server error." });
+  } catch (err) {
+    console.log("SERVER ERROR:", err);
+    res.json({ reply: "Server error, try again." });
   }
 });
 
-app.listen(process.env.PORT || 3000, () =>
-  console.log("Server running")
-);
+// Start server
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log("SERVER RUNNING on " + port));
