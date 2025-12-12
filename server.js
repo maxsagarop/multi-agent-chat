@@ -1,44 +1,58 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 import OpenAI from "openai";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
-app.use(express.static("public"));
+
+// Serve frontend files
+app.use(express.static(path.join(__dirname, "public")));
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+// Agents personality
 const personalities = {
-  riya: "Friendly Bengali girl. Talk sweetly.",
-  meherin: "Calm, caring girl.",
+  riya: "Sweet, friendly Bengali girl.",
+  meherin: "Calm & caring girl.",
   disha: "Funny talkative girl.",
   ayesha: "Mature supportive girl.",
   ananya: "Cute soft-spoken girl."
 };
 
+// Auto-language system prompt
 const systemPrompt = `
-Detect user's language automatically.
-Reply in SAME LANGUAGE.
-Never force Bengali.
-Talk friendly like a real girl.
+Detect the user's language.
+Always reply in the SAME language.
+Be friendly, soft, and natural.
 `;
 
 app.post("/api/chat", async (req, res) => {
-  const { agentId, message } = req.body;
+  try {
+    const { agentId, message } = req.body;
 
-  const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: personalities[agentId] },
-      { role: "system", content: systemPrompt },
-      { role: "user", content: message }
-    ]
-  });
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: personalities[agentId] },
+        { role: "system", content: systemPrompt },
+        { role: "user", content: message }
+      ]
+    });
 
-  res.json({ reply: response.choices[0].message.content });
+    res.json({ reply: completion.choices[0].message.content });
+
+  } catch (error) {
+    console.log("Error:", error);
+    res.json({ reply: "Server error." });
+  }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log("Server running on " + port));
+app.listen(process.env.PORT || 3000, () =>
+  console.log("Server running")
+);
