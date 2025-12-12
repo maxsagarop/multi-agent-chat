@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // OpenAI init
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENROUTER_API_KEY
 });
 
 // Agent personalities
