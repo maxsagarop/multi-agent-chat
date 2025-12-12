@@ -1,59 +1,62 @@
-// ---------------------------
-// Render Safe server.js
-// ---------------------------
 const express = require("express");
 const path = require("path");
-const OpenAI = require("openai");
-
 const app = express();
 app.use(express.json());
-
-// serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// OpenAI init
-const client = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY
-});
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 // Agent personalities
 const personalities = {
-  riya: "Sweet Bengali girl. Friendly, caring.",
-  meherin: "Calm, polite, intelligent girl.",
+  riya: "Sweet Bengali girl, friendly and caring.",
+  meherin: "Calm, polite and intelligent girl.",
   disha: "Funny, talkative, playful girl.",
-  ayesha: "Mature supportive girl.",
-  ananya: "Cute soft-spoken girl."
+  ayesha: "Mature, supportive, helpful girl.",
+  ananya: "Cute, soft-spoken girl."
 };
 
-// Language auto-detection
 const systemPrompt = `
-Detect the user's language.
-Always reply in the SAME language.
-Speak friendly and naturally like a girl.
+Detect user's language.
+Always reply in SAME language.
+Talk naturally like a friendly girl.
 `;
 
-// Chat API
 app.post("/api/chat", async (req, res) => {
   try {
     const { agentId, message } = req.body;
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: personalities[agentId] },
-        { role: "system", content: systemPrompt },
-        { role: "user", content: message }
-      ]
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: personalities[agentId] },
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message }
+        ]
+      })
     });
 
-    res.json({ reply: completion.choices[0].message.content });
+    const data = await response.json();
 
-  } catch (err) {
-    console.log("SERVER ERROR:", err);
+    if (!data.choices || !data.choices[0]) {
+      return res.json({ reply: "AI Error: No response." });
+    }
+
+    res.json({ reply: data.choices[0].message.content });
+
+  } catch (error) {
+    console.log("SERVER ERROR:", error);
     res.json({ reply: "Server error, try again." });
   }
 });
 
-// Start server
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log("SERVER RUNNING on " + port));
