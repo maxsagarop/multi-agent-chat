@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
   background: #121b22;
+  font-family: Arial;
   color: white;
 }
 
@@ -10,10 +10,9 @@ body {
   width: 100%;
   background: #1f2c34;
   padding: 14px;
-  color: #e9edef;
-  font-size: 18px;
   text-align: center;
-  border-bottom: 1px solid #263238;
+  font-size: 18px;
+  color: #e9edef;
 }
 
 /* HOME GRID */
@@ -21,7 +20,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
   padding: 16px;
 }
 
@@ -29,27 +28,21 @@ body {
   width: 44%;
   background: #1f2c34;
   border-radius: 12px;
-  box-shadow: 0 0 4px #0b141a;
-  cursor: pointer;
-  overflow: hidden;
   border: 1px solid #2a3942;
 }
-
 .girl-card img {
   width: 100%;
 }
-
 .girl-card h3 {
   text-align: center;
-  margin: 10px 0;
-  color: #e9edef;
+  margin: 8px 0;
 }
 
-/* CHAT AREA */
+/* CHAT PAGE */
 .chat-area {
+  height: calc(100vh - 50px);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 50px);
   background: #0b141a;
 }
 
@@ -59,33 +52,29 @@ body {
   overflow-y: auto;
 }
 
-/* MESSAGES */
-.user {
-  background: #005c4b;
+.message {
   max-width: 75%;
   padding: 10px;
-  margin: 6px 0;
   border-radius: 10px;
+  margin: 6px 0;
+}
+
+.user {
+  background: #005c4b;
   margin-left: auto;
-  color: white;
   border-bottom-right-radius: 0;
 }
 
 .bot {
   background: #202c33;
-  max-width: 75%;
-  padding: 10px;
-  margin: 6px 0;
-  border-radius: 10px;
   margin-right: auto;
-  color: #e9edef;
   border-bottom-left-radius: 0;
 }
 
-/* INPUT */
+/* input area */
 .input-area {
-  display: flex;
   padding: 10px;
+  display: flex;
   background: #202c33;
 }
 
@@ -99,24 +88,22 @@ body {
 }
 
 #send-btn {
-  margin-left: 10px;
   padding: 12px 18px;
+  margin-left: 10px;
   background: #005c4b;
-  color: white;
   border: none;
-  border-radius: 25px;
+  color: white;
+  border-radius: 20px;
 }
 
-/* TYPING ANIMATION */
+/* typing animation */
 .typing {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin: 8px 12px;
+  margin-left: 10px;
   font-size: 14px;
-  color: #cfd8dc;
 }
-
 .dot {
   width: 6px;
   height: 6px;
@@ -124,9 +111,8 @@ body {
   border-radius: 50%;
   animation: blink 1.4s infinite both;
 }
-
-.dot:nth-child(2){ animation-delay:.2s;}
-.dot:nth-child(3){ animation-delay:.4s;}
+.dot:nth-child(2){ animation-delay:0.2s; }
+.dot:nth-child(3){ animation-delay:0.4s; }
 
 @keyframes blink {
   0% {opacity:.2;}
