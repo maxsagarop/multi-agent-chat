@@ -1,22 +1,22 @@
-/* BODY */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #e5ddd5;
+  background: #121b22;
+  color: white;
 }
 
 /* HEADER */
 .header {
   width: 100%;
-  background: #075e54;
+  background: #1f2c34;
   padding: 14px;
-  color: white;
+  color: #e9edef;
   font-size: 18px;
   text-align: center;
-  box-sizing: border-box;
+  border-bottom: 1px solid #263238;
 }
 
-/* HOME PAGE GRID */
+/* HOME GRID */
 .girls {
   display: flex;
   flex-wrap: wrap;
@@ -27,21 +27,22 @@ body {
 
 .girl-card {
   width: 44%;
-  background: white;
+  background: #1f2c34;
   border-radius: 12px;
-  box-shadow: 0 0 6px #ccc;
+  box-shadow: 0 0 4px #0b141a;
   cursor: pointer;
   overflow: hidden;
+  border: 1px solid #2a3942;
 }
 
 .girl-card img {
   width: 100%;
-  display: block;
 }
 
 .girl-card h3 {
   text-align: center;
   margin: 10px 0;
+  color: #e9edef;
 }
 
 /* CHAT AREA */
@@ -49,7 +50,7 @@ body {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 50px);
-  background: #efeae2;
+  background: #0b141a;
 }
 
 .chat-box {
@@ -58,47 +59,77 @@ body {
   overflow-y: auto;
 }
 
-.message {
+/* MESSAGES */
+.user {
+  background: #005c4b;
   max-width: 75%;
   padding: 10px;
   margin: 6px 0;
   border-radius: 10px;
-  line-height: 1.4;
-}
-
-.user {
-  background: #dcf8c6;
   margin-left: auto;
+  color: white;
   border-bottom-right-radius: 0;
 }
 
 .bot {
-  background: white;
+  background: #202c33;
+  max-width: 75%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 10px;
   margin-right: auto;
+  color: #e9edef;
   border-bottom-left-radius: 0;
 }
 
-/* INPUT AREA */
+/* INPUT */
 .input-area {
   display: flex;
   padding: 10px;
-  background: white;
-  border-top: 1px solid #ccc;
+  background: #202c33;
 }
 
 #msg {
   flex: 1;
   padding: 12px;
   border-radius: 25px;
-  border: 1px solid #ccc;
+  border: 1px solid #37464f;
+  background: #2a3942;
+  color: white;
 }
 
 #send-btn {
   margin-left: 10px;
   padding: 12px 18px;
-  background: #075e54;
+  background: #005c4b;
   color: white;
   border: none;
   border-radius: 25px;
-  cursor: pointer;
+}
+
+/* TYPING ANIMATION */
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 8px 12px;
+  font-size: 14px;
+  color: #cfd8dc;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #cfd8dc;
+  border-radius: 50%;
+  animation: blink 1.4s infinite both;
+}
+
+.dot:nth-child(2){ animation-delay:.2s;}
+.dot:nth-child(3){ animation-delay:.4s;}
+
+@keyframes blink {
+  0% {opacity:.2;}
+  20% {opacity:1;}
+  100% {opacity:.2;}
 }
