@@ -1,3 +1,4 @@
+/* BODY */
 body {
   margin: 0;
   background: #121b22;
@@ -9,10 +10,16 @@ body {
 .header {
   width: 100%;
   background: #1f2c34;
-  padding: 14px;
-  text-align: center;
-  font-size: 18px;
-  color: #e9edef;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #263238;
+}
+.agent-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
 }
 
 /* HOME GRID */
@@ -23,12 +30,12 @@ body {
   gap: 12px;
   padding: 16px;
 }
-
 .girl-card {
   width: 44%;
   background: #1f2c34;
   border-radius: 12px;
   border: 1px solid #2a3942;
+  overflow: hidden;
 }
 .girl-card img {
   width: 100%;
@@ -38,46 +45,63 @@ body {
   margin: 8px 0;
 }
 
-/* CHAT PAGE */
+/* CHAT AREA */
 .chat-area {
   height: calc(100vh - 50px);
   display: flex;
   flex-direction: column;
   background: #0b141a;
 }
-
 .chat-box {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
 }
 
+/* CHAT BUBBLES */
 .message {
   max-width: 75%;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 12px;
   margin: 6px 0;
+  
+  /* Bubble Animation */
+  animation: bubbleIn 0.25s ease-out;
 }
 
+/* USER BUBBLE */
 .user {
   background: #005c4b;
   margin-left: auto;
   border-bottom-right-radius: 0;
 }
 
+/* BOT BUBBLE */
 .bot {
   background: #202c33;
   margin-right: auto;
   border-bottom-left-radius: 0;
+  color: #e9edef;
 }
 
-/* input area */
+/* BUBBLE ANIMATION KEYFRAMES */
+@keyframes bubbleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+/* INPUT AREA */
 .input-area {
   padding: 10px;
   display: flex;
   background: #202c33;
 }
-
 #msg {
   flex: 1;
   padding: 12px;
@@ -86,17 +110,16 @@ body {
   background: #2a3942;
   color: white;
 }
-
 #send-btn {
   padding: 12px 18px;
   margin-left: 10px;
   background: #005c4b;
   border: none;
   color: white;
-  border-radius: 20px;
+  border-radius: 25px;
 }
 
-/* typing animation */
+/* TYPING ANIMATION */
 .typing {
   display: flex;
   align-items: center;
@@ -111,11 +134,11 @@ body {
   border-radius: 50%;
   animation: blink 1.4s infinite both;
 }
-.dot:nth-child(2){ animation-delay:0.2s; }
-.dot:nth-child(3){ animation-delay:0.4s; }
+.dot:nth-child(2) { animation-delay: .2s; }
+.dot:nth-child(3) { animation-delay: .4s; }
 
 @keyframes blink {
-  0% {opacity:.2;}
-  20% {opacity:1;}
-  100% {opacity:.2;}
+  0% {opacity: .2;}
+  20% {opacity: 1;}
+  100% {opacity: .2;}
 }
