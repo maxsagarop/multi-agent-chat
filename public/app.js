@@ -3,39 +3,43 @@ let activeAgent = localStorage.getItem("agent") || "riya";
 const chatBox = document.getElementById("chat-box");
 const typing = document.getElementById("typingIndicator");
 
-// show message
+// Show message bubble with animation
 function addMessage(text, type){
   const div = document.createElement("div");
   div.classList.add("message", type);
   div.textContent = text;
+
   chatBox.appendChild(div);
+
+  // Auto scroll down
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// send to your server or temporary bot
-async function fakeBotReply(userText){
+// Fake bot reply (later replace with your AI API)
+async function fakeBotReply(msg){
   return new Promise(res=>{
     setTimeout(()=>{
-      res("Okay, I got your message: " + userText);
-    }, 1000);
+      res("You said: " + msg);
+    }, 900);
   });
 }
 
 document.getElementById("send-btn").onclick = async () => {
   const msg = document.getElementById("msg");
-  const txt = msg.value.trim();
-  if(!txt) return;
+  const text = msg.value.trim();
+  if(!text) return;
 
-  addMessage(txt,"user");
+  addMessage(text, "user");
   msg.value = "";
 
-  // typing show
-  typing.style.display="flex";
-  await new Promise(r=>setTimeout(r,1500));
+  // show typing animation
+  typing.style.display = "flex";
+  await new Promise(r => setTimeout(r, 1200));
 
-  // fake reply (later replace with your backend)
-  const reply = await fakeBotReply(txt);
+  const reply = await fakeBotReply(text);
 
-  typing.style.display="none";
-  addMessage(reply,"bot");
+  typing.style.display = "none";
+
+  // bot final reply
+  addMessage(reply, "bot");
 };
