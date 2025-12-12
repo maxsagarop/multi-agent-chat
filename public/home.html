@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Friend</title>
+<link rel="stylesheet" href="style.css?v=30">
+</head>
+
+<body>
+
+<div class="header">Choose Your AI Friend</div>
+
+<div class="girls">
+
+  <div class="girl-card" onclick="go('riya')">
+    <img src="https://i.imgur.com/yZ9ZQGk.png">
+    <h3>রিয়া</h3>
+  </div>
+
+  <div class="girl-card" onclick="go('meherin')">
+    <img src="https://i.imgur.com/u3LrjMq.png">
+    <h3>মেহরিন</h3>
+  </div>
+
+  <div class="girl-card" onclick="go('disha')">
+    <img src="https://i.imgur.com/p9JCV8T.png">
+    <h3>দিশা</h3>
+  </div>
+
+  <div class="girl-card" onclick="go('ayesha')">
+    <img src="https://i.imgur.com/1UZ1Jx8.png">
+    <h3>আয়েশা</h3>
+  </div>
+
+  <div class="girl-card" onclick="go('ananya')">
+    <img src="https://i.imgur.com/RiqfC1q.png">
+    <h3>অনন্যা</h3>
+  </div>
+
+</div>
+
+<script>
+  function go(agent){
+    localStorage.setItem("agent", agent);
+    window.location.href = "chat.html";
+  }
+</script>
+
+</body>
+</html>
