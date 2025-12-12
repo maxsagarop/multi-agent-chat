@@ -1,11 +1,11 @@
-/* GENERAL */
+/* BODY */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #e5ddd5;
 }
 
-/* HEADER (WhatsApp style) */
+/* HEADER */
 .header {
   width: 100%;
   background: #075e54;
@@ -16,7 +16,7 @@ body {
   box-sizing: border-box;
 }
 
-/* HOME PAGE (5 girls grid) */
+/* HOME PAGE GRID */
 .girls {
   display: flex;
   flex-wrap: wrap;
@@ -27,7 +27,7 @@ body {
 
 .girl-card {
   width: 44%;
-  background: #fff;
+  background: white;
   border-radius: 12px;
   box-shadow: 0 0 6px #ccc;
   cursor: pointer;
@@ -36,7 +36,6 @@ body {
 
 .girl-card img {
   width: 100%;
-  height: auto;
   display: block;
 }
 
@@ -53,7 +52,6 @@ body {
   background: #efeae2;
 }
 
-/* Chat Messages */
 .chat-box {
   flex: 1;
   padding: 10px;
@@ -66,7 +64,6 @@ body {
   margin: 6px 0;
   border-radius: 10px;
   line-height: 1.4;
-  font-size: 15px;
 }
 
 .user {
@@ -76,7 +73,7 @@ body {
 }
 
 .bot {
-  background: #fff;
+  background: white;
   margin-right: auto;
   border-bottom-left-radius: 0;
 }
@@ -85,7 +82,7 @@ body {
 .input-area {
   display: flex;
   padding: 10px;
-  background: #f0f0f0;
+  background: white;
   border-top: 1px solid #ccc;
 }
 
@@ -94,16 +91,14 @@ body {
   padding: 12px;
   border-radius: 25px;
   border: 1px solid #ccc;
-  outline: none;
-  font-size: 16px;
 }
 
 #send-btn {
-  padding: 12px 20px;
   margin-left: 10px;
-  border: none;
+  padding: 12px 18px;
   background: #075e54;
   color: white;
-  cursor: pointer;
+  border: none;
   border-radius: 25px;
+  cursor: pointer;
 }
