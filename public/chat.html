@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat</title>
+<link rel="stylesheet" href="style.css?v=30">
+</head>
+
+<body>
+
+<div class="header" id="agentName">Chat</div>
+
+<div class="chat-area">
+
+  <div id="chat-box" class="chat-box"></div>
+
+  <div class="input-area">
+    <input id="msg" placeholder="Type a message..." />
+    <button id="send-btn">Send</button>
+  </div>
+
+</div>
+
+<script>
+const agent = localStorage.getItem("agent") || "riya";
+
+const names = {
+  riya: "রিয়া",
+  meherin: "মেহরিন",
+  disha: "দিশা",
+  ayesha: "আয়েশা",
+  ananya: "অনন্যা"
+};
+
+document.getElementById("agentName").innerText = names[agent];
+</script>
+
+<script src="app.js"></script>
+
+</body>
+</html>
