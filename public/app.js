@@ -3,12 +3,21 @@ const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send-btn");
 const typing = document.getElementById("typing");
 
-// --- Get Agent from URL ---
 const urlParams = new URLSearchParams(window.location.search);
-const agent = urlParams.get("agent") || "riya";
-document.getElementById("agentName").textContent = agent.toUpperCase();
+const agentId = urlParams.get("agent") || "riya";
 
-// --- Send Message ---
+document.getElementById("agentName").textContent = agentId.toUpperCase();
+
+// Add message bubble
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerText = text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Send message
 async function sendMessage() {
   const text = msgInput.value.trim();
   if (!text) return;
@@ -21,23 +30,13 @@ async function sendMessage() {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ agentId: agent, message: text })
+    body: JSON.stringify({ agentId, message: text })
   });
 
   const data = await res.json();
   typing.style.display = "none";
 
   addMessage(data.reply, "bot");
-}
-
-// --- Add Message to UI ---
-function addMessage(text, type) {
-  const div = document.createElement("div");
-  div.className = `msg ${type}`;
-  div.textContent = text;
-  chatBox.appendChild(div);
-
-  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 sendBtn.addEventListener("click", sendMessage);
