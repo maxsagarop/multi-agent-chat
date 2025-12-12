@@ -1,58 +1,70 @@
-// Load selected agent
-let agentId = localStorage.getItem("agentId") || "riya";
+let activeAgent = localStorage.getItem("agent") || "riya";
+document.getElementById("agentName").textContent = activeAgent.toUpperCase();
 
 const chatBox = document.getElementById("chat-box");
-const typing = document.getElementById("typingIndicator");
-const sendBtn = document.getElementById("send-btn");
 const msgInput = document.getElementById("msg");
+const sendBtn = document.getElementById("send-btn");
+const typing = document.getElementById("typingIndicator");
+const toneSelect = document.getElementById("toneSelect");
+const avatarInput = document.getElementById("avatarInput");
 
-// Add message to chat
-function addMessage(text, type) {
-    const msg = document.createElement("div");
-    msg.className = "message " + type;
-    msg.textContent = text;
-    chatBox.appendChild(msg);
-    chatBox.scrollTop = chatBox.scrollHeight;
+let avatarSaved = localStorage.getItem("avatar_" + activeAgent);
+if (avatarSaved) {
+  document.getElementById("agentPic").src = avatarSaved;
 }
 
-// Send message to backend server (REAL AI REPLY)
-async function sendToAI(message) {
-    try {
-        const res = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                agentId: agentId,
-                message: message
-            })
-        });
+avatarInput.addEventListener("change", (e) => {
+  let file = e.target.files[0];
+  if (!file) return;
 
-        const data = await res.json();
-        return data.reply;
-
-    } catch (err) {
-        return "Server error, try again.";
-    }
-}
-
-// On Send Button Click
-sendBtn.onclick = async () => {
-    const text = msgInput.value.trim();
-    if (!text) return;
-
-    addMessage(text, "user");
-    msgInput.value = "";
-
-    typing.style.display = "flex"; // show typing animation
-
-    const reply = await sendToAI(text);
-
-    typing.style.display = "none";
-
-    addMessage(reply, "bot");
-};
-
-// Enter key support
-msgInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendBtn.click();
+  let reader = new FileReader();
+  reader.onload = () => {
+    localStorage.setItem("avatar_" + activeAgent, reader.result);
+    document.getElementById("agentPic").src = reader.result;
+  };
+  reader.readAsDataURL(file);
 });
+
+function addMessage(text, type){
+  const div = document.createElement("div");
+  div.classList.add("message", type);
+  div.textContent = text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+async function askAI(message, tone) {
+  try {
+    let res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        agentId: activeAgent,
+        message: message,
+        tone: tone
+      })
+    });
+
+    let data = await res.json();
+    return data.reply;
+
+  } catch (err) {
+    return "Server error, try again.";
+  }
+}
+
+sendBtn.onclick = async () => {
+  let text = msgInput.value.trim();
+  if (!text) return;
+
+  addMessage(text, "user");
+  msgInput.value = "";
+
+  typing.style.display = "flex";
+
+  let reply = await askAI(text, toneSelect.value);
+
+  typing.style.display = "none";
+
+  addMessage(reply, "bot");
+};
