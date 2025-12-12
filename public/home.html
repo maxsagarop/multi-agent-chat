@@ -3,60 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat</title>
+<title>Select Friend</title>
 <link rel="stylesheet" href="style.css?v=90">
 </head>
 
 <body>
 
-<div class="header" style="display:flex;align-items:center;gap:10px;padding-left:10px;">
-  <img id="agentPic" style="width:35px;height:35px;border-radius:50%;">
-  <span id="agentName"></span>
-</div>
+<div class="header">Choose Your AI Friend</div>
 
-<div class="chat-area">
+<div class="girls">
 
-  <div id="chat-box" class="chat-box"></div>
-
-  <!-- Typing indicator -->
-  <div id="typingIndicator" class="typing" style="display:none;">
-    <span id="typingName"></span>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
+  <div class="girl-card" onclick="go('riya')">
+    <img src="https://i.imgur.com/yZ9ZQGk.png">
+    <h3>রিয়া</h3>
   </div>
 
-  <div class="input-area">
-    <input id="msg" placeholder="Type a message..." />
-    <button id="send-btn">Send</button>
+  <div class="girl-card" onclick="go('meherin')">
+    <img src="https://i.imgur.com/u3LrjMq.png">
+    <h3>মেহরিন</h3>
+  </div>
+
+  <div class="girl-card" onclick="go('disha')">
+    <img src="https://i.imgur.com/p9JCV8T.png">
+    <h3>দিশা</h3>
+  </div>
+
+  <div class="girl-card" onclick="go('ayesha')">
+    <img src="https://i.imgur.com/1UZ1Jx8.png">
+    <h3>আয়েশা</h3>
+  </div>
+
+  <div class="girl-card" onclick="go('ananya')">
+    <img src="https://i.imgur.com/RiqfC1q.png">
+    <h3>অনন্যা</h3>
   </div>
 
 </div>
 
 <script>
-const agent = localStorage.getItem("agent") || "riya";
-
-const names = {
-  riya: "রিয়া",
-  meherin: "মেহরিন",
-  disha: "দিশা",
-  ayesha: "আয়েশা",
-  ananya: "অনন্যা"
-};
-
-const pics = {
-  riya: "https://i.imgur.com/yZ9ZQGk.png",
-  meherin: "https://i.imgur.com/u3LrjMq.png",
-  disha: "https://i.imgur.com/p9JCV8T.png",
-  ayesha: "https://i.imgur.com/1UZ1Jx8.png",
-  ananya: "https://i.imgur.com/RiqfC1q.png"
-};
-
-document.getElementById("agentName").innerText = names[agent];
-document.getElementById("agentPic").src = pics[agent];
+function go(agent){
+  localStorage.setItem("agent", agent);
+  window.location.href = "chat.html";
+}
 </script>
-
-<script src="app.js"></script>
 
 </body>
 </html>
