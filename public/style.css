@@ -104,3 +104,21 @@ body {
   20% { opacity: 1; }
   100% { opacity: .2; }
 }
+.ad-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #091318;
+  padding: 8px 0;
+  border-top: 1px solid #12222e;
+  border-bottom: 1px solid #12222e;
+}
+
+@media (max-width: 600px) {
+  .ad-box iframe {
+    max-width: 300px;
+    width: 100% !important;
+    height: auto;
+  }
+}
+
