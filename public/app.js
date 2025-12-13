@@ -4,19 +4,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const msgInput = document.getElementById("msg");
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
+  const agentNameEl = document.getElementById("agentName");
+
+  if (!chatBox || !msgInput || !sendBtn || !typing) {
+    console.error("Required elements missing");
+    return;
+  }
 
   const params = new URLSearchParams(window.location.search);
   const agentId = params.get("agent") || "riya";
 
-  document.getElementById("agentName").innerText = agentId.toUpperCase();
+  agentNameEl.innerText = agentId.toUpperCase();
 
   const STORAGE_KEY = "chat_" + agentId;
-  let isSending = false;
+  let isSending = false; // 🔒 prevent double request
 
-  // LOAD OLD
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  saved.forEach(m => addMessage(m.text, m.type));
-  chatBox.scrollTop = chatBox.scrollHeight;
+  // ================= LOAD CHAT =================
+  typing.style.display = "flex";
+
+  setTimeout(() => {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    chatBox.innerHTML = "";
+
+    saved.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "msg " + m.type;
+      div.innerText = m.text;
+      chatBox.appendChild(div);
+    });
+
+    typing.style.display = "none";
+    scrollBottom();
+  }, 200);
+
+  // ================= HELPERS =================
+  function scrollBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
   function saveMessage(text, type) {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -29,9 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
     div.className = "msg " + type;
     div.innerText = text;
     chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    scrollBottom();
   }
 
+  // ================= SEND MESSAGE =================
   async function sendMessage() {
     if (isSending) return;
 
@@ -51,27 +76,42 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agentId, message: text })
+        body: JSON.stringify({
+          agentId: agentId,
+          message: text
+        })
       });
+
+      if (!res.ok) throw new Error("Server error");
 
       const data = await res.json();
 
       typing.style.display = "none";
-      addMessage(data.reply || "No reply", "bot");
-      saveMessage(data.reply || "No reply", "bot");
 
-    } catch {
+      if (data && data.reply) {
+        addMessage(data.reply, "bot");
+        saveMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply received.", "bot");
+      }
+
+    } catch (err) {
       typing.style.display = "none";
-      addMessage("Server error", "bot");
+      addMessage("Server problem. Try again.", "bot");
     }
 
     isSending = false;
     sendBtn.disabled = false;
   }
 
+  // ================= EVENTS =================
   sendBtn.addEventListener("click", sendMessage);
+
   msgInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
   });
 
 });
