@@ -1,50 +1,108 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Select Friend</title>
-<link rel="stylesheet" href="style.css">
+<title>Select Agent</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f1b22;
+    color: #fff;
+  }
+
+  h2 {
+    text-align: center;
+    padding: 16px;
+    margin: 0;
+    background: #091318;
+    border-bottom: 1px solid #1a2b35;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .card {
+    background: #1e2a33;
+    border-radius: 14px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  .card:hover {
+    transform: scale(1.03);
+    background: #263640;
+  }
+
+  .card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  /* Mobile optimization */
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 </head>
 
 <body>
 
-<div class="header">Choose Your AI Friend</div>
+<h2>Select AI Agent</h2>
 
-<div class="girls">
+<div class="grid">
 
-  <div class="girl-card" onclick="go('riya')">
-    <img src="https://i.imgur.com/yZ9ZQGk.png">
-    <h3>রিয়া</h3>
+  <div class="card" onclick="openChat('riya')">
+    <img src="avatars/riya.jpg" alt="Riya">
+    <p>Riya</p>
   </div>
 
-  <div class="girl-card" onclick="go('meherin')">
-    <img src="https://i.imgur.com/u3LrjMq.png">
-    <h3>মেহরিন</h3>
+  <div class="card" onclick="openChat('meherin')">
+    <img src="avatars/meherin.jpg" alt="Meherin">
+    <p>Meherin</p>
   </div>
 
-  <div class="girl-card" onclick="go('disha')">
-    <img src="https://i.imgur.com/p9JCV8T.png">
-    <h3>দিশা</h3>
+  <div class="card" onclick="openChat('disha')">
+    <img src="avatars/disha.jpg" alt="Disha">
+    <p>Disha</p>
   </div>
 
-  <div class="girl-card" onclick="go('ayesha')">
-    <img src="https://i.imgur.com/1UZ1Jx8.png">
-    <h3>আয়েশা</h3>
+  <div class="card" onclick="openChat('ayesha')">
+    <img src="avatars/ayesha.jpg" alt="Ayesha">
+    <p>Ayesha</p>
   </div>
 
-  <div class="girl-card" onclick="go('ananya')">
-    <img src="https://i.imgur.com/RiqfC1q.png">
-    <h3>অনন্যা</h3>
+  <div class="card" onclick="openChat('ananya')">
+    <img src="avatars/ananya.jpg" alt="Ananya">
+    <p>Ananya</p>
   </div>
 
 </div>
 
 <script>
-function go(agent){
-  localStorage.setItem("agent", agent);
-  window.location.href = "chat.html";
-}
+  function openChat(agent) {
+    // redirect to chat page with selected agent
+    window.location.href = "chat.html?agent=" + agent;
+  }
 </script>
 
 </body>
