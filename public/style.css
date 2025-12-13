@@ -121,4 +121,21 @@ body {
     height: auto;
   }
 }
+.ad-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #091318;
+  padding: 10px 0;
+  border-top: 1px solid #12222e;
+}
+
+@media (max-width: 600px) {
+  .ad-box iframe,
+  .ad-box > div {
+    width: 100% !important;
+    max-width: 320px;
+    margin: auto;
+  }
+}
 
