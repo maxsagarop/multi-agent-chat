@@ -102,3 +102,7 @@ body {
   20% { opacity: 1; }
   100% { opacity: .2; }
 }
+.typing {
+  display: flex;
+  gap: 6px
+}
