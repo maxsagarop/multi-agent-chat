@@ -57,13 +57,4 @@ app.post("/api/chat", async (req, res) => {
 
 // Start Server
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log("SERVER RUNNING on " + port));    res.json({ reply });
-
-  } catch (err) {
-    console.log(err);
-    res.json({ reply: "Server error, try again." });
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running"));
+app.listen(port, () => console.log("SERVER RUNNING on " + port));
