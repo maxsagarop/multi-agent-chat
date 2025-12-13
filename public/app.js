@@ -1,117 +1,95 @@
-const chatBox = document.getElementById("chat-box");
-const msgInput = document.getElementById("msg");
-const sendBtn = document.getElementById("send-btn");
-const typing = document.getElementById("typing");
+document.addEventListener("DOMContentLoaded", () => {
 
-const params = new URLSearchParams(window.location.search);
-const agentId = params.get("agent") || "riya";
+  const chatBox = document.getElementById("chat-box");
+  const msgInput = document.getElementById("msg");
+  const sendBtn = document.getElementById("send-btn");
+  const typing = document.getElementById("typing");
 
-document.getElementById("agentName").innerText = agentId.toUpperCase();
+  if (!sendBtn || !msgInput) {
+    alert("Send button or input not found");
+    return;
+  }
 
-// ================= STORAGE KEY =================
-const STORAGE_KEY = "chat_" + agentId;
+  const params = new URLSearchParams(window.location.search);
+  const agentId = params.get("agent") || "riya";
 
-// ================= SHOW LOADING =================
-typing.innerText = "Loading chat...";
-typing.style.display = "block";
+  document.getElementById("agentName").innerText = agentId.toUpperCase();
 
-// ================= LOAD SAVED MESSAGES =================
-setTimeout(() => {
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  const STORAGE_KEY = "chat_" + agentId;
 
-  chatBox.innerHTML = ""; // clear chat box first
+  // ===== Load old messages =====
+  typing.innerText = "Loading chat...";
+  typing.style.display = "block";
 
-  saved.forEach(m => {
+  setTimeout(() => {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    chatBox.innerHTML = "";
+
+    saved.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "msg " + m.type;
+      div.innerText = m.text;
+      chatBox.appendChild(div);
+    });
+
+    typing.style.display = "none";
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 200);
+
+  // ===== Save message =====
+  function saveMessage(text, type) {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    data.push({ text, type });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  // ===== Add message =====
+  function addMessage(text, type) {
     const div = document.createElement("div");
-    div.className = "msg " + m.type;
-    div.innerText = m.text;
+    div.className = "msg " + type;
+    div.innerText = text;
     chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // ===== Send message =====
+  async function sendMessage() {
+    const text = msgInput.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    saveMessage(text, "user");
+    msgInput.value = "";
+
+    typing.innerText = "Typing...";
+    typing.style.display = "block";
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agentId, message: text })
+      });
+
+      const data = await res.json();
+
+      typing.style.display = "none";
+      addMessage(data.reply, "bot");
+      saveMessage(data.reply, "bot");
+
+    } catch (e) {
+      typing.style.display = "none";
+      addMessage("Server error", "bot");
+    }
+  }
+
+  // ===== EVENTS =====
+  sendBtn.addEventListener("click", sendMessage);
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
   });
 
-  typing.style.display = "none";
-  chatBox.scrollTop = chatBox.scrollHeight;
-}, 300); // small delay for smooth load
-
-// ================= SAVE MESSAGE =================
-function saveMessage(text, type) {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  data.push({ text, type });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-// ================= ADD MESSAGE =================
-function addMessage(text, type) {
-  const div = document.createElement("div");
-  div.className = "msg " + type;
-  div.innerText = text;
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// ================= SEND MESSAGE =================
-async function sendMessage() {
-  const text = msgInput.value.trim();
-  if (!text) return;
-
-  addMessage(text, "user");
-  saveMessage(text, "user");
-  msgInput.value = "";
-
-  typing.innerText = "Typing...";
-  typing.style.display = "block";
-
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ agentId, message: text })
-    });
-
-    const data = await res.json();
-
-    typing.style.display = "none";
-    addMessage(data.reply, "bot");
-    saveMessage(data.reply, "bot");
-
-  } catch {
-    typing.style.display = "none";
-    addMessage("Server error, try again.", "bot");
-  }
-}
-
-// ================= EVENTS =================
-sendBtn.onclick = sendMessage;
-msgInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
-});  if (!text) return;
-
-  addMessage(text, "user");
-  saveMessage(text, "user");
-  msgInput.value = "";
-
-  typing.style.display = "block";
-
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ agentId, message: text })
-    });
-
-    const data = await res.json();
-    typing.style.display = "none";
-
-    addMessage(data.reply, "bot");
-    saveMessage(data.reply, "bot");
-
-  } catch {
-    typing.style.display = "none";
-    addMessage("Server error, try again.", "bot");
-  }
-}
-
-// 🔹 Events
-sendBtn.onclick = sendMessage;
-msgInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
 });
