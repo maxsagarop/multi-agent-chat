@@ -74,9 +74,11 @@ body {
   font-weight: bold;
 }
 
+/* ✅ FIXED TYPING ANIMATION */
 .typing {
-  display: none;
+  display: none;          /* JS control করবে */
   margin-left: 10px;
+  gap: 6px;
 }
 
 .typing span {
@@ -101,8 +103,4 @@ body {
   0% { opacity: .2; }
   20% { opacity: 1; }
   100% { opacity: .2; }
-}
-.typing {
-  display: flex;
-  gap: 6px
 }
