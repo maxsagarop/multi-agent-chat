@@ -17,9 +17,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_KEY = "chat_" + agentId;
 
-  // ===== Load old messages =====
-  typing.innerText = "Loading chat...";
-  typing.style.display = "block";
+  /* =====================
+     TYPING CONTROL
+  ===================== */
+  function showTyping(show) {
+    if (!typing) return;
+    typing.style.display = show ? "flex" : "none";
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  /* =====================
+     LOAD OLD MESSAGES
+  ===================== */
+  showTyping(true);
 
   setTimeout(() => {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -32,18 +42,22 @@ document.addEventListener("DOMContentLoaded", () => {
       chatBox.appendChild(div);
     });
 
-    typing.style.display = "none";
+    showTyping(false);
     chatBox.scrollTop = chatBox.scrollHeight;
   }, 200);
 
-  // ===== Save message =====
+  /* =====================
+     SAVE MESSAGE
+  ===================== */
   function saveMessage(text, type) {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     data.push({ text, type });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  // ===== Add message =====
+  /* =====================
+     ADD MESSAGE
+  ===================== */
   function addMessage(text, type) {
     const div = document.createElement("div");
     div.className = "msg " + type;
@@ -52,7 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  // ===== Send message =====
+  /* =====================
+     SEND MESSAGE
+  ===================== */
   async function sendMessage() {
     const text = msgInput.value.trim();
     if (!text) return;
@@ -61,8 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     saveMessage(text, "user");
     msgInput.value = "";
 
-    typing.innerText = "Typing...";
-    typing.style.display = "block";
+    showTyping(true);
 
     try {
       const res = await fetch("/api/chat", {
@@ -73,17 +88,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      typing.style.display = "none";
+      showTyping(false);
       addMessage(data.reply, "bot");
       saveMessage(data.reply, "bot");
 
     } catch (e) {
-      typing.style.display = "none";
+      showTyping(false);
       addMessage("Server error", "bot");
     }
   }
 
-  // ===== EVENTS =====
+  /* =====================
+     EVENTS
+  ===================== */
   sendBtn.addEventListener("click", sendMessage);
 
   msgInput.addEventListener("keydown", e => {
