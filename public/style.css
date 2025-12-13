@@ -3,8 +3,10 @@ body {
   background: #0f1b22;
   color: white;
   font-family: Arial, sans-serif;
+  overflow: hidden; /* 🔒 body scroll বন্ধ */
 }
 
+/* ================= HEADER ================= */
 .chat-header {
   display: flex;
   align-items: center;
@@ -22,19 +24,27 @@ body {
   margin-right: 10px;
 }
 
+/* ================= CHAT AREA ================= */
 .chat-box {
-  height: calc(100vh - 140px);
+  height: calc(100vh - 150px);
   overflow-y: auto;
   padding: 10px;
+  box-sizing: border-box;
 }
 
+/* ================= MESSAGE BUBBLE ================= */
 .msg {
-  max-width: 75%;
+  max-width: 80%;
   padding: 10px;
   margin: 6px 0;
   border-radius: 10px;
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.5;
+
+  /* 🔥 TEXT CUT PROBLEM FIX 🔥 */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .user {
@@ -47,6 +57,7 @@ body {
   margin-right: auto;
 }
 
+/* ================= INPUT AREA ================= */
 .input-area {
   display: flex;
   padding: 10px;
@@ -54,6 +65,7 @@ body {
   position: fixed;
   bottom: 0;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .input-area input {
@@ -74,18 +86,17 @@ body {
   font-weight: bold;
 }
 
-/* ✅ FIXED TYPING ANIMATION */
+/* ================= TYPING ANIMATION ================= */
 .typing {
-  display: none;          /* JS control করবে */
-  margin-left: 10px;
+  display: none;      /* JS control করবে */
   gap: 6px;
+  padding-left: 10px;
 }
 
 .typing span {
   width: 7px;
   height: 7px;
   background: white;
-  margin: 0 2px;
   border-radius: 50%;
   display: inline-block;
   animation: blink 1.4s infinite both;
@@ -104,23 +115,8 @@ body {
   20% { opacity: 1; }
   100% { opacity: .2; }
 }
-.ad-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #091318;
-  padding: 8px 0;
-  border-top: 1px solid #12222e;
-  border-bottom: 1px solid #12222e;
-}
 
-@media (max-width: 600px) {
-  .ad-box iframe {
-    max-width: 300px;
-    width: 100% !important;
-    height: auto;
-  }
-}
+/* ================= AD BOX ================= */
 .ad-box {
   display: flex;
   justify-content: center;
@@ -128,9 +124,16 @@ body {
   background: #091318;
   padding: 10px 0;
   border-top: 1px solid #12222e;
+  border-bottom: 1px solid #12222e;
 }
 
+/* ================= MOBILE FIX ================= */
 @media (max-width: 600px) {
+  .msg {
+    max-width: 90%;
+    font-size: 15px;
+  }
+
   .ad-box iframe,
   .ad-box > div {
     width: 100% !important;
@@ -138,4 +141,3 @@ body {
     margin: auto;
   }
 }
-
