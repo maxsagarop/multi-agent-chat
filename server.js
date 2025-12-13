@@ -1,17 +1,12 @@
-// ---------------------------
-// Render Safe server.js (Final Fixed Version)
-// ---------------------------
 const express = require("express");
 const path = require("path");
 const OpenAI = require("openai");
 
 const app = express();
 app.use(express.json());
-
-// serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// OpenRouter API Init
+// OpenRouter client
 const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: "https://openrouter.ai/api/v1"
@@ -19,19 +14,16 @@ const client = new OpenAI({
 
 // Agent personalities
 const personalities = {
-  riya: "Sweet Bengali girl. Romantic, friendly & caring.",
-  meherin: "Calm, polite, intelligent girl.",
-  disha: "Funny, talkative, playful girl.",
-  ayesha: "Mature supportive girl.",
-  ananya: "Cute soft-spoken girl."
+  riya: "You are Riya, a sweet, friendly Bengali girl. Talk politely and warmly.",
+  meherin: "You are Meherin, calm, intelligent and polite.",
+  disha: "You are Disha, cheerful and friendly.",
+  ayesha: "You are Ayesha, mature and supportive.",
+  ananya: "You are Ananya, soft-spoken and kind."
 };
 
-// Language Auto Detection
-const systemPrompt = `
-Detect the user's language.
-Always reply in the SAME language.
-Reply naturally, emotionally, like a real girl.
-`;
+// System prompt (language auto reply)
+const systemPrompt =
+  "Detect the user's language and always reply in the same language. Be friendly and natural.";
 
 // Chat API
 app.post("/api/chat", async (req, res) => {
@@ -39,22 +31,24 @@ app.post("/api/chat", async (req, res) => {
     const { agentId, message } = req.body;
 
     const completion = await client.chat.completions.create({
-      model: "openai/gpt-4o-mini",   // ✅ FIXED MODEL NAME
+      model: "openai/gpt-4o-mini",
       messages: [
-        { role: "system", content: personalities[agentId] },
+        { role: "system", content: personalities[agentId] || personalities.riya },
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ]
     });
 
-    res.json({ reply: completion.choices[0].message.content });
-
+    res.json({
+      reply: completion.choices[0].message.content
+    });
   } catch (err) {
-    console.log("SERVER ERROR:", err);
-    res.json({ reply: "Server error, try again." });
+    console.error("SERVER ERROR:", err.message);
+    res.status(500).json({ reply: "Server error, try again." });
   }
 });
 
-// Start Server
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log("SERVER RUNNING on " + port));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
