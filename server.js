@@ -31,7 +31,8 @@ Keep replies friendly, natural, and conversational.
 ===================== */
 const personalities = {
   riya: "Your name is Riya.",
-  meherin: "Your name is Meherin.",
+  
+  Mitu: "Your name is Mitu.",
   disha: "Your name is Disha.",
   ayesha: "Your name is Ayesha.",
   ananya: "Your name is Ananya."
