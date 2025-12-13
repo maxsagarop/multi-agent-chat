@@ -12,14 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const params = new URLSearchParams(window.location.search);
   const agentId = params.get("agent") || "riya";
-
   document.getElementById("agentName").innerText = agentId.toUpperCase();
 
   const STORAGE_KEY = "chat_" + agentId;
+  let isSending = false; // 🔒 LOCK
 
-  let isSending = false; // 🔒 IMPORTANT LOCK
-
-  // ================= LOAD OLD MESSAGES =================
+  // ========== LOAD OLD MESSAGES ==========
   typing.style.display = "flex";
 
   setTimeout(() => {
@@ -27,24 +25,21 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBox.innerHTML = "";
 
     saved.forEach(m => {
-      const div = document.createElement("div");
-      div.className = "msg " + m.type;
-      div.innerText = m.text;
-      chatBox.appendChild(div);
+      addMessage(m.text, m.type);
     });
 
     typing.style.display = "none";
     chatBox.scrollTop = chatBox.scrollHeight;
-  }, 200);
+  }, 150);
 
-  // ================= SAVE MESSAGE =================
+  // ========== SAVE MESSAGE ==========
   function saveMessage(text, type) {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     data.push({ text, type });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  // ================= ADD MESSAGE =================
+  // ========== ADD MESSAGE ==========
   function addMessage(text, type) {
     const div = document.createElement("div");
     div.className = "msg " + type;
@@ -53,9 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  // ================= SEND MESSAGE =================
+  // ========== SEND MESSAGE ==========
   async function sendMessage() {
-    if (isSending) return; // 🚫 prevent double send
+    if (isSending) return;
 
     const text = msgInput.value.trim();
     if (!text) return;
@@ -80,14 +75,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       typing.style.display = "none";
 
-      if (data.reply) {
+      if (data && data.reply) {
         addMessage(data.reply, "bot");
         saveMessage(data.reply, "bot");
       } else {
         addMessage("No response from server.", "bot");
       }
 
-    } catch (e) {
+    } catch (err) {
       typing.style.display = "none";
       addMessage("Server error, try again.", "bot");
     }
@@ -96,11 +91,12 @@ document.addEventListener("DOMContentLoaded", () => {
     sendBtn.disabled = false;
   }
 
-  // ================= EVENTS =================
+  // ========== EVENTS ==========
   sendBtn.addEventListener("click", sendMessage);
 
   msgInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       sendMessage();
     }
   });
