@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
-  if (!sendBtn || !msgInput) {
-    alert("Send button or input not found");
+  if (!sendBtn || !msgInput || !chatBox || !typing) {
+    alert("Required elements missing");
     return;
   }
 
@@ -17,19 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_KEY = "chat_" + agentId;
 
-  /* =====================
-     TYPING CONTROL
-  ===================== */
-  function showTyping(show) {
-    if (!typing) return;
-    typing.style.display = show ? "flex" : "none";
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+  let isSending = false; // 🔒 IMPORTANT LOCK
 
-  /* =====================
-     LOAD OLD MESSAGES
-  ===================== */
-  showTyping(true);
+  // ================= LOAD OLD MESSAGES =================
+  typing.style.display = "flex";
 
   setTimeout(() => {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -42,22 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
       chatBox.appendChild(div);
     });
 
-    showTyping(false);
+    typing.style.display = "none";
     chatBox.scrollTop = chatBox.scrollHeight;
   }, 200);
 
-  /* =====================
-     SAVE MESSAGE
-  ===================== */
+  // ================= SAVE MESSAGE =================
   function saveMessage(text, type) {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     data.push({ text, type });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  /* =====================
-     ADD MESSAGE
-  ===================== */
+  // ================= ADD MESSAGE =================
   function addMessage(text, type) {
     const div = document.createElement("div");
     div.className = "msg " + type;
@@ -66,18 +53,21 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  /* =====================
-     SEND MESSAGE
-  ===================== */
+  // ================= SEND MESSAGE =================
   async function sendMessage() {
+    if (isSending) return; // 🚫 prevent double send
+
     const text = msgInput.value.trim();
     if (!text) return;
+
+    isSending = true;
+    sendBtn.disabled = true;
 
     addMessage(text, "user");
     saveMessage(text, "user");
     msgInput.value = "";
 
-    showTyping(true);
+    typing.style.display = "flex";
 
     try {
       const res = await fetch("/api/chat", {
@@ -88,19 +78,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      showTyping(false);
-      addMessage(data.reply, "bot");
-      saveMessage(data.reply, "bot");
+      typing.style.display = "none";
+
+      if (data.reply) {
+        addMessage(data.reply, "bot");
+        saveMessage(data.reply, "bot");
+      } else {
+        addMessage("No response from server.", "bot");
+      }
 
     } catch (e) {
-      showTyping(false);
-      addMessage("Server error", "bot");
+      typing.style.display = "none";
+      addMessage("Server error, try again.", "bot");
     }
+
+    isSending = false;
+    sendBtn.disabled = false;
   }
 
-  /* =====================
-     EVENTS
-  ===================== */
+  // ================= EVENTS =================
   sendBtn.addEventListener("click", sendMessage);
 
   msgInput.addEventListener("keydown", e => {
