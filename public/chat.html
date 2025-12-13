@@ -2,83 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chat</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 
 <body>
-  <!-- CPM NATIVE BANNER -->
-<div class="ad-box">
-  <script
-    async="async"
-    data-cfasync="false"
-    src="https://pl28247345.effectivegatecpm.com/d3942d875bb3bafdc9254dfea52778ac/invoke.js">
-  </script>
-  <div id="container-d3942d875bb3bafdc9254dfea52778ac"></div>
-</div>
 
-<!-- BANNER AD -->
-<div class="ad-box">
-  <script type="text/javascript">
-    atOptions = {
-      'key' : 'b75af8d676821132c29e3d0ae03a46f1',
-      'format' : 'iframe',
-      'height' : 250,
-      'width' : 300,
-      'params' : {}
-    };
-  </script>
-  <script
-    type="text/javascript"
-    src="https://www.highperformanceformat.com/b75af8d676821132c29e3d0ae03a46f1/invoke.js">
-  </script>
-</div>
-
-  <!-- CHAT HEADER -->
+  <!-- HEADER -->
   <div class="chat-header">
-    <img id="agentImg" class="agent-img" alt="Agent">
+    <img id="agentImg" class="agent-img" src="https://i.ibb.co/Zz0MvrrV/1000101517.png">
     <span id="agentName">RIYA</span>
   </div>
 
-  <!-- CHAT BOX -->
+  <!-- 🔥 AD BANNER (TOP) -->
+  <div class="ad-box">
+    <script
+      async
+      data-cfasync="false"
+      src="https://pl28247345.effectivegatecpm.com/d3942d875bb3bafdc9254dfea52778ac/invoke.js">
+    </script>
+    <div id="container-d3942d875bb3bafdc9254dfea52778ac"></div>
+  </div>
+
+  <!-- CHAT -->
   <div id="chat-box" class="chat-box"></div>
 
-  <!-- TYPING INDICATOR -->
+  <!-- TYPING -->
   <div id="typing" class="typing">
     <span></span><span></span><span></span>
   </div>
 
-  <!-- INPUT AREA -->
+  <!-- INPUT -->
   <div class="input-area">
-    <input id="msg" type="text" placeholder="Type a message…" />
+    <input id="msg" type="text" placeholder="Type a message..." />
     <button id="send-btn">Send</button>
   </div>
 
-  <!-- MAIN SCRIPT -->
   <script src="app.js"></script>
-
-  <!-- AGENT NAME + IMAGE SCRIPT -->
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const agentId = urlParams.get("agent") || "riya";
-
-    const agentName = document.getElementById("agentName");
-    const agentImg = document.getElementById("agentImg");
-
-    agentName.textContent = agentId.toUpperCase();
-
-    // Same image as home page (Riya)
-    const agentImages = {
-      riya: "https://i.ibb.co/Zz0MvrrV/1000101517.png",
-      meherin: "avatars/meherin.jpg",
-      disha: "avatars/disha.jpg",
-      ayesha: "avatars/ayesha.jpg",
-      ananya: "avatars/ananya.jpg"
-    };
-
-    agentImg.src = agentImages[agentId] || agentImages.riya;
-  </script>
-
 </body>
 </html>
