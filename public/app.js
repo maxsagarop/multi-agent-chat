@@ -5,16 +5,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
-  // 👉 URL থেকে agent ধরছি
+  /* ================= AGENT FROM URL ================= */
   const params = new URLSearchParams(window.location.search);
   const agentId = params.get("agent") || "riya";
 
-  // 👉 Header নাম change
-  const headerName = document.querySelector(".chat-header span");
-  if (headerName) {
-    headerName.innerText = agentId.toUpperCase();
+  /* ================= HEADER UPDATE ================= */
+  const agentNameEl = document.querySelector(".chat-header span");
+  const agentImgEl  = document.querySelector(".chat-header img");
+
+  const agents = {
+    riya: {
+      name: "RIYA",
+      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
+    },
+    meherin: {
+      name: "MEHERIN",
+      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
+    },
+    disha: {
+      name: "DISHA",
+      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
+    },
+    ayesha: {
+      name: "AYESHA",
+      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
+    },
+    ananya: {
+      name: "ANANYA",
+      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
+    }
+  };
+
+  if (agents[agentId]) {
+    agentNameEl.innerText = agents[agentId].name;
+    agentImgEl.src = agents[agentId].img;
   }
 
+  /* ================= HELPERS ================= */
   function scrollBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -27,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollBottom();
   }
 
+  /* ================= SEND MESSAGE ================= */
   async function sendMessage() {
     const text = msgInput.value.trim();
     if (!text) return;
@@ -39,11 +67,9 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          agentId: agentId,   // 🔥 এখানে fix
+          agentId: agentId,   // ✅ FIXED HERE
           message: text
         })
       });
@@ -65,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sendBtn.disabled = false;
   }
 
+  /* ================= EVENTS ================= */
   sendBtn.addEventListener("click", sendMessage);
 
   msgInput.addEventListener("keydown", e => {
