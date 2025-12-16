@@ -1,40 +1,65 @@
-const chatBox = document.getElementById("chat-box");
-const msgInput = document.getElementById("msg");
-const sendBtn = document.getElementById("send-btn");
-const typing = document.getElementById("typing");
+document.addEventListener("DOMContentLoaded", () => {
 
-function addMsg(text, type) {
-  const div = document.createElement("div");
-  div.className = "msg " + type;
-  div.innerText = text;
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
+  const chatBox = document.getElementById("chat-box");
+  const msgInput = document.getElementById("msg");
+  const sendBtn = document.getElementById("send-btn");
+  const typing = document.getElementById("typing");
 
-async function sendMessage() {
-  const text = msgInput.value.trim();
-  if (!text) return;
+  function scrollBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-  addMsg(text, "user");
-  msgInput.value = "";
-  typing.style.display = "flex";
-  sendBtn.disabled = true;
+  function addMessage(text, type) {
+    const div = document.createElement("div");
+    div.className = "msg " + type;
+    div.innerText = text;
+    chatBox.appendChild(div);
+    scrollBottom();
+  }
 
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text })
-    });
+  async function sendMessage() {
+    const text = msgInput.value.trim();
+    if (!text) return;
 
-    const data = await res.json();
-    typing.style.display = "none";
+    addMessage(text, "user");
+    msgInput.value = "";
+    typing.style.display = "flex";
+    sendBtn.disabled = true;
 
-    if (data.reply) {
-      addMsg(data.reply, "bot");
-    } else {
-      addMsg("No reply", "bot");
+    try {
+      const res = await fetch(
+        "https://multi-agent-chat-cr6x.onrender.com/api/chat",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text })
+        }
+      );
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (e) {
+      typing.style.display = "none";
+      addMessage("Server error ❌", "bot");
     }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.onclick = sendMessage;
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+});    }
 
   } catch {
     typing.style.display = "none";
