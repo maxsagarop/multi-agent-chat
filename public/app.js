@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
+  if (!chatBox || !msgInput || !sendBtn) {
+    alert("HTML element missing");
+    return;
+  }
+
   function scrollBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -21,10 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = msgInput.value.trim();
     if (!text) return;
 
-    addMessage(text, "user");
-    msgInput.value = "";
-    typing.style.display = "flex";
     sendBtn.disabled = true;
+    msgInput.value = "";
+
+    addMessage(text, "user");
+    typing.style.display = "flex";
 
     try {
       const res = await fetch(
@@ -32,9 +38,40 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text })
+          body: JSON.stringify({
+            agentId: "riya",
+            message: text
+          })
         }
       );
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (e) {
+      typing.style.display = "none";
+      addMessage("Server error", "bot");
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+});      );
 
       const data = await res.json();
       typing.style.display = "none";
