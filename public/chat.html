@@ -1,65 +1,33 @@
-document.addEventListener("DOMContentLoaded", () => {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
-  const chatBox = document.getElementById("chat-box");
-  const msgInput = document.getElementById("msg");
-  const sendBtn = document.getElementById("send-btn");
-  const typing = document.getElementById("typing");
+<body>
 
-  const agentNameEl = document.getElementById("agentName");
-  const agentImgEl = document.getElementById("agentImg");
+  <div class="chat-header">
+    <img id="agentImg" class="agent-img" src="">
+    <span id="agentName"></span>
+  </div>
 
-  /* ================= AGENT FROM URL ================= */
-  const params = new URLSearchParams(window.location.search);
-  const agentId = params.get("agent") || "riya";
+  <div id="chat-box" class="chat-box"></div>
 
-  /* ================= AGENT CONFIG ================= */
-  const agents = {
-    riya: {
-      name: "RIYA",
-      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
-    },
-    meherin: {
-      name: "MEHERIN",
-      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
-    },
-    disha: {
-      name: "DISHA",
-      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
-    },
-    ayesha: {
-      name: "AYESHA",
-      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
-    },
-    ananya: {
-      name: "ANANYA",
-      img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
-    }
-  };
+  <div id="typing" class="typing">
+    <span></span><span></span><span></span>
+  </div>
 
-  const currentAgent = agents[agentId] || agents.riya;
-  agentNameEl.innerText = currentAgent.name;
-  agentImgEl.src = currentAgent.img;
+  <div class="input-area">
+    <input id="msg" placeholder="Type message...">
+    <button id="send-btn">Send</button>
+  </div>
 
-  /* ================= HELPERS ================= */
-  function scrollBottom() {
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  function addMessage(text, type) {
-    const div = document.createElement("div");
-    div.className = "msg " + type;
-    div.innerText = text;
-    chatBox.appendChild(div);
-    scrollBottom();
-  }
-
-  /* ================= SEND MESSAGE ================= */
-  async function sendMessage() {
-    const text = msgInput.value.trim();
-    if (!text) return;
-
-    addMessage(text, "user");
-    msgInput.value = "";
+  <script src="app.js"></script>
+</body>
+</html>    msgInput.value = "";
 
     typing.style.display = "block";
     sendBtn.disabled = true;
