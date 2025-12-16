@@ -5,14 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
-  // 🔥 URL থেকে agent নাও
+  // 👉 URL থেকে agent ধরছি
   const params = new URLSearchParams(window.location.search);
-  const agentId = params.get("agent") || "riya"; // default riya
+  const agentId = params.get("agent") || "riya";
 
-  // নিচে header নাম change
-  const agentNameEl = document.querySelector(".chat-header span");
-  if (agentNameEl) {
-    agentNameEl.innerText = agentId.toUpperCase();
+  // 👉 Header নাম change
+  const headerName = document.querySelector(".chat-header span");
+  if (headerName) {
+    headerName.innerText = agentId.toUpperCase();
   }
 
   function scrollBottom() {
@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addMessage(text, "user");
     msgInput.value = "";
-
     typing.style.display = "block";
     sendBtn.disabled = true;
 
@@ -44,12 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          agentId: agentId,   // 🔥 এখানে fixed
+          agentId: agentId,   // 🔥 এখানে fix
           message: text
         })
       });
-
-      if (!res.ok) throw new Error("Server error");
 
       const data = await res.json();
       typing.style.display = "none";
@@ -68,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sendBtn.disabled = false;
   }
 
-  // 🔘 Events
   sendBtn.addEventListener("click", sendMessage);
 
   msgInput.addEventListener("keydown", e => {
