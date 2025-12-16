@@ -1,40 +1,51 @@
-document.addEventListener("DOMContentLoaded", () => {
+const chatBox = document.getElementById("chat-box");
+const msgInput = document.getElementById("msg");
+const sendBtn = document.getElementById("send-btn");
+const typing = document.getElementById("typing");
 
-  const chatBox = document.getElementById("chat-box");
-  const msgInput = document.getElementById("msg");
-  const sendBtn = document.getElementById("send-btn");
-  const typing = document.getElementById("typing");
-  const agentNameEl = document.getElementById("agentName");
+function addMsg(text, type) {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerText = text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-  if (!chatBox || !msgInput || !sendBtn || !typing) {
-    console.error("Required elements missing");
-    return;
-  }
+async function sendMessage() {
+  const text = msgInput.value.trim();
+  if (!text) return;
 
-  const params = new URLSearchParams(window.location.search);
-  const agentId = params.get("agent") || "riya";
-  agentNameEl.innerText = agentId.toUpperCase();
-
-  const STORAGE_KEY = "chat_" + agentId;
-
-  let activeRequestId = null; // ⭐ MAIN FIX
-
-  /* ================= LOAD CHAT ================= */
+  addMsg(text, "user");
+  msgInput.value = "";
   typing.style.display = "flex";
+  sendBtn.disabled = true;
 
-  setTimeout(() => {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    chatBox.innerHTML = "";
-
-    saved.forEach(m => {
-      const div = document.createElement("div");
-      div.className = "msg " + m.type;
-      div.innerText = m.text;
-      chatBox.appendChild(div);
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
     });
 
+    const data = await res.json();
     typing.style.display = "none";
-    scrollBottom();
+
+    if (data.reply) {
+      addMsg(data.reply, "bot");
+    } else {
+      addMsg("No reply", "bot");
+    }
+
+  } catch {
+    typing.style.display = "none";
+    addMsg("Server error", "bot");
+  }
+
+  sendBtn.disabled = false;
+}
+
+sendBtn.onclick = sendMessage;
+msgInput.onkeydown = e => e.key === "Enter" && sendMessage();    scrollBottom();
   }, 150);
 
   /* ================= HELPERS ================= */
