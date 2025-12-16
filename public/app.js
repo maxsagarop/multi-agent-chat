@@ -5,15 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
-  // 🔹 URL থেকে agent নাও (riya / disha / ayesha ইত্যাদি)
+  // 🔹 agent কে URL থেকে নেওয়া
   const params = new URLSearchParams(window.location.search);
-  const agentId = params.get("agent") || "riya";
-
-  // header নাম বদলাও
-  const agentNameEl = document.querySelector(".chat-header span");
-  if (agentNameEl) {
-    agentNameEl.innerText = agentId.toUpperCase();
-  }
+  const agentId = params.get("agent") || "riya"; // default riya
 
   function scrollBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -31,10 +25,56 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = msgInput.value.trim();
     if (!text) return;
 
+    // user message
     addMessage(text, "user");
     msgInput.value = "";
 
     typing.style.display = "block";
+    sendBtn.disabled = true;
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          agentId: agentId,   // 🔥 এখানে dynamic agent
+          message: text
+        })
+      });
+
+      if (!res.ok) throw new Error("Network error");
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (err) {
+      typing.style.display = "none";
+      addMessage("Server error ❌", "bot");
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  // 🔹 Button click
+  sendBtn.addEventListener("click", sendMessage);
+
+  // 🔹 Enter key
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+});    typing.style.display = "block";
     sendBtn.disabled = true;
 
     try {
