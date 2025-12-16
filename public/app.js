@@ -4,15 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const msgInput = document.getElementById("msg");
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
+  const agentNameEl = document.getElementById("agentName");
+  const agentImgEl = document.getElementById("agentImg");
 
-  /* ================= AGENT FROM URL ================= */
+  // 🔹 agent from URL
   const params = new URLSearchParams(window.location.search);
   const agentId = params.get("agent") || "riya";
 
-  /* ================= HEADER UPDATE ================= */
-  const agentNameEl = document.querySelector(".chat-header span");
-  const agentImgEl  = document.querySelector(".chat-header img");
-
+  // 🔹 agent profiles
   const agents = {
     riya: {
       name: "RIYA",
@@ -35,6 +34,71 @@ document.addEventListener("DOMContentLoaded", () => {
       img: "https://i.ibb.co/Zz0MvrrV/1000101517.png"
     }
   };
+
+  // 🔹 set header
+  const currentAgent = agents[agentId] || agents.riya;
+  agentNameEl.innerText = currentAgent.name;
+  agentImgEl.src = currentAgent.img;
+
+  function scrollBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function addMessage(text, type) {
+    const div = document.createElement("div");
+    div.className = "msg " + type;
+    div.innerText = text;
+    chatBox.appendChild(div);
+    scrollBottom();
+  }
+
+  async function sendMessage() {
+    const text = msgInput.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    msgInput.value = "";
+
+    typing.style.display = "block";
+    sendBtn.disabled = true;
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          agentId: agentId,   // ✅ এখন dynamic
+          message: text
+        })
+      });
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (e) {
+      typing.style.display = "none";
+      addMessage("Server error ❌", "bot");
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+});  };
 
   if (agents[agentId]) {
     agentNameEl.innerText = agents[agentId].name;
