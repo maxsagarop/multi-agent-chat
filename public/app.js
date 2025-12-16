@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
+  // 🔹 URL থেকে agent পড়া
+  const params = new URLSearchParams(window.location.search);
+  const agentId = params.get("agent") || "riya"; // default riya
+
   function scrollBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -34,7 +38,38 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          agentId: "riya",
+          agentId: agentId,   // 🔥 এখানে আর riya নাই
+          message: text
+        })
+      });
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data && data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (e) {
+      typing.style.display = "none";
+      addMessage("Server error ❌", "bot");
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+});          agentId: "riya",
           message: text
         })
       });
