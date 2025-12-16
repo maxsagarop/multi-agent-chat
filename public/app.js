@@ -5,9 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
-  // 🔹 URL থেকে agent পড়া
+  // 🔹 URL থেকে agent নাও (riya / disha / ayesha ইত্যাদি)
   const params = new URLSearchParams(window.location.search);
-  const agentId = params.get("agent") || "riya"; // default riya
+  const agentId = params.get("agent") || "riya";
+
+  // header নাম বদলাও
+  const agentNameEl = document.querySelector(".chat-header span");
+  if (agentNameEl) {
+    agentNameEl.innerText = agentId.toUpperCase();
+  }
 
   function scrollBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -35,6 +41,41 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          agentId: agentId,   // 🔥 এখানে আর hardcode না
+          message: text
+        })
+      });
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data && data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (e) {
+      typing.style.display = "none";
+      addMessage("Server error ❌", "bot");
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+});        headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
