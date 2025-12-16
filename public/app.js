@@ -5,11 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
-  if (!chatBox || !msgInput || !sendBtn) {
-    alert("HTML element missing");
-    return;
-  }
-
   function scrollBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -26,15 +21,49 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = msgInput.value.trim();
     if (!text) return;
 
-    sendBtn.disabled = true;
-    msgInput.value = "";
-
     addMessage(text, "user");
+    msgInput.value = "";
     typing.style.display = "flex";
+    sendBtn.disabled = true;
 
     try {
-      const res = await fetch(
-        "https://multi-agent-chat-cr6x.onrender.com/api/chat",
+      const res = await fetch("https://multi-agent-chat-cr6x.onrender.com/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          agentId: "riya",
+          message: text
+        })
+      });
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (err) {
+      typing.style.display = "none";
+      addMessage("Server error", "bot");
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  });
+
+});        "https://multi-agent-chat-cr6x.onrender.com/api/chat",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
