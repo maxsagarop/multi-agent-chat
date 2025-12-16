@@ -5,14 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const typing = document.getElementById("typing");
 
-  // 🔹 agent query parameter নাও
+  // ✅ URL থেকে agent নাও
   const params = new URLSearchParams(window.location.search);
   const agentId = params.get("agent") || "riya";
 
-  // 🔹 header এ agent name দেখাও
-  const agentNameSpan = document.querySelector(".chat-header span");
-  if (agentNameSpan) {
-    agentNameSpan.innerText = agentId.toUpperCase();
+  // (optional) header এ নাম দেখাতে চাইলে
+  const agentNameEl = document.querySelector(".chat-header span");
+  if (agentNameEl) {
+    agentNameEl.innerText = agentId.toUpperCase();
   }
 
   function scrollBottom() {
@@ -33,8 +33,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addMessage(text, "user");
     msgInput.value = "";
+
     typing.style.display = "block";
     sendBtn.disabled = true;
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          agentId: agentId,   // ✅ এখানে আর hard-code না
+          message: text
+        })
+      });
+
+      const data = await res.json();
+      typing.style.display = "none";
+
+      if (data && data.reply) {
+        addMessage(data.reply, "bot");
+      } else {
+        addMessage("No reply from server", "bot");
+      }
+
+    } catch (e) {
+      typing.style.display = "none";
+      addMessage("Server error ❌", "bot");
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  msgInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+});    sendBtn.disabled = true;
 
     try {
       const res = await fetch("/api/chat", {
