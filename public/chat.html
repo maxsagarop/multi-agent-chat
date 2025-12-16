@@ -11,30 +11,41 @@
 
   <!-- HEADER -->
   <div class="chat-header">
-    <img id="agentImg" class="agent-img" src="https://i.ibb.co/Zz0MvrrV/1000101517.png">
+    <img
+      id="agentImg"
+      class="agent-img"
+      src="https://i.ibb.co/Zz0MvrrV/1000101517.png"
+      alt="Agent"
+    >
     <span id="agentName">RIYA</span>
   </div>
 
-  <!-- 🔥 AD BANNER (TOP) -->
-  <div class="ad-box">
-    <script
-      async
-      data-cfasync="false"
-      src="https://pl28247345.effectivegatecpm.com/d3942d875bb3bafdc9254dfea52778ac/invoke.js">
-    </script>
-    <div id="container-d3942d875bb3bafdc9254dfea52778ac"></div>
-  </div>
-
-  <!-- CHAT -->
+  <!-- CHAT BOX -->
   <div id="chat-box" class="chat-box"></div>
 
-  <!-- TYPING -->
+  <!-- TYPING INDICATOR -->
   <div id="typing" class="typing">
-    <span></span><span></span><span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
 
-  <!-- INPUT -->
+  <!-- INPUT AREA -->
   <div class="input-area">
+    <input
+      id="msg"
+      type="text"
+      placeholder="Type a message..."
+      autocomplete="off"
+    />
+    <button id="send-btn">Send</button>
+  </div>
+
+  <!-- SCRIPT -->
+  <script src="app.js"></script>
+
+</body>
+</html>  <div class="input-area">
     <input id="msg" type="text" placeholder="Type a message..." />
     <button id="send-btn">Send</button>
   </div>
